@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'open sans', 'PingFang TC', 'Microsoft JhengHei',
+    'Hiragino Sans GB', 'Source Han Sans TC', 'Noto Sans CJK TC', sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
