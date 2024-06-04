@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-const routes = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Default',
@@ -11,7 +11,22 @@ const routes = [
             name: 'Home',
                 component: () => import('@/views/Home.vue'),
           },
-        ]
+        {
+            path: '/user',
+            name: 'User',
+          component: () => import('@/views/User.vue'),
+        },
+        {
+          path: '/user/create/:id?',
+          name: 'UserCreate',
+          component: () => import('@/views/UserCreate.vue'),
+        },
+        {
+          path: '/admin-list',
+          name: 'Admin',
+          component: () => import('@/views/Admin.vue'),
+        },
+    ]
   },
   {
       path: '/sign',

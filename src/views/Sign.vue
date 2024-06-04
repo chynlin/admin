@@ -14,10 +14,10 @@
         @finishFailed="onFinishFailed"
       >
         <a-form-item
-          name="username"
+          name="account"
           :rules="[{ required: true, message: '請輸入您的使用者名稱' }]"
         >
-          <a-input v-model:value="formState.username" size="large">
+          <a-input v-model:value="formState.account" size="large">
             <template #prefix>
               <div
                 class="text-base pr-3 mr-2 border-r border-gray-200 h-4 flex items-center"
@@ -65,24 +65,42 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 interface FormState {
-  username: string;
+  account: string;
   password: string;
   remember: boolean;
 }
 
+const store = useStore();
 const router = useRouter();
-const formState = reactive<FormState>({
-  username: '',
+const formState = ref<FormState>({
+  account: '',
   password: '',
   remember: true,
 });
+onMounted(() => {
+  const lastItem = localStorage.getItem('acc');
+  if (lastItem) {
+    formState.value = JSON.parse(lastItem);
+  }
+});
+const login = async () => {
+  const res = await store.dispatch('admin_login', formState.value);
+  if (res) {
+    router.replace('/');
+  }
+};
 const onFinish = (values: any) => {
-  console.log('Success:', values);
-  router.replace('/');
+  if (formState.value.remember) {
+    localStorage.setItem('acc', JSON.stringify(formState.value));
+  } else {
+    localStorage.removeItem('acc');
+  }
+  login();
 };
 
 const onFinishFailed = (errorInfo: any) => {
