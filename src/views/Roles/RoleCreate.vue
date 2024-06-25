@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-full">
     <a-page-header
-      :title="route.params.id ? '編輯用戶' : '新增用戶'"
+      :title="route.params.id ? '編輯角色' : '創建角色'"
       @back="$router.go(-1)"
       class="!p-0"
     />
@@ -19,13 +19,17 @@
           :label="field.label"
           :rules="[field.rules]"
         >
-          <a-select v-if="key === 'country'" v-model:value="field.val">
+          <a-select
+            v-if="field.type === 'select'"
+            v-model:value="field.val"
+            :placeholder="field.placeholder"
+          >
             <a-select-option
-              v-for="select of countries"
-              :key="select.code"
-              :value="select.country"
+              v-for="select of field.options"
+              :key="select.id"
+              :value="select.id"
             >
-              {{ select.code }} {{ select.country }}
+              {{ select.title }}
             </a-select-option>
           </a-select>
           <a-input
@@ -33,6 +37,7 @@
             v-model:value="field.val"
             :placeholder="field.placeholder"
             :type="field.type"
+            :disabled="field.disabled"
           />
         </a-form-item>
         <a-form-item>
@@ -42,7 +47,7 @@
             :loading="loading"
             class="w-32 h-10 mt-6"
           >
-            {{ route.params.id ? '編輯' : '添加' }}
+            {{ route.params.id ? '保存' : '添加' }}
           </a-button>
         </a-form-item>
       </a-form>
@@ -57,6 +62,7 @@ import { useStore } from 'vuex';
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
+
 interface FormField {
   key: string;
   label: string;
@@ -72,60 +78,15 @@ interface FormField {
 type FormState = Record<string, FormField>;
 
 const loading = ref(false);
-const countries = ref([]);
 const formState = ref<FormState>({
-  name: {
-    key: 'name',
-    label: '用戶名稱',
-    placeholder: '請輸入用戶名稱',
+  title: {
+    key: 'title',
+    label: '角色名稱',
+    placeholder: '請輸入角色名稱',
     val: '',
     type: 'text',
     rules: {
       required: true,
-      message: '',
-    },
-  },
-  email: {
-    key: 'email',
-    label: '電子信箱',
-    placeholder: '請輸入信箱地址',
-    val: '',
-    type: 'email',
-    rules: {
-      required: true,
-      message: '',
-    },
-  },
-  country: {
-    key: 'country',
-    label: '手機號碼國家',
-    placeholder: '請輸入手機號碼國家',
-    val: '',
-    type: 'text',
-    rules: {
-      required: true,
-      message: '',
-    },
-  },
-  mobile: {
-    key: 'mobile',
-    label: '手機號碼',
-    placeholder: '請輸入手機號碼',
-    val: '',
-    type: 'text',
-    rules: {
-      required: true,
-      message: '',
-    },
-  },
-  password: {
-    key: 'password',
-    label: '用戶密碼',
-    placeholder: '請輸入用戶密碼',
-    val: '',
-    type: 'password',
-    rules: {
-      required: !route.params.id,
       message: '',
     },
   },
@@ -133,13 +94,12 @@ const formState = ref<FormState>({
 
 onMounted(() => {
   if (route.params.id) {
-    getUserInfo();
+    getRoleInfo();
   }
-  getCountries();
 });
 
-const getUserInfo = async () => {
-  const res = await store.dispatch('get_user_info', {
+const getRoleInfo = async () => {
+  const res = await store.dispatch('get_role_item', {
     id: route.params.id,
   });
   if (res) {
@@ -151,12 +111,8 @@ const getUserInfo = async () => {
   }
 };
 
-const getCountries = async () => {
-  countries.value = await store.dispatch('get_countries_code');
-};
-
 const submitUserForm = async () => {
-  const actionName = route.params.id ? 'edit_user' : 'add_user';
+  const actionName = route.params.id ? 'update_roles' : 'create_roles';
   loading.value = true;
   let payload = Object.values(formState.value).reduce((acc, e) => {
     acc[e.key] = e.val;
@@ -168,7 +124,7 @@ const submitUserForm = async () => {
   const res = await store.dispatch(actionName, payload);
   loading.value = false;
   if (res) {
-    router.replace('/user');
+    router.replace('/role-management');
   }
 };
 const onFinish = (values: any) => {

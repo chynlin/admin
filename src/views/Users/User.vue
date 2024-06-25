@@ -8,9 +8,9 @@
       class="mb-8"
     >
       <template #icon>
-        <i class="bi bi-person-plus-fill text-xl mr-2"></i>
+        <i class="bi bi-plus-circle mr-2"></i>
       </template>
-      新增管理員
+      新增用戶
     </a-button>
     <a-table :columns="columns" :data-source="data">
       <template #bodyCell="{ column, record }">
@@ -119,7 +119,7 @@ onMounted(() => {
   getUsersList();
 });
 const getUsersList = async () => {
-  const res = await store.dispatch('get_admin_list');
+  const res = await store.dispatch('get_user_list');
   if (res) {
     data.value = res.data;
     pagination.value = res.pagination;

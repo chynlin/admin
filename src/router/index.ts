@@ -14,18 +14,63 @@ const routes: Array<RouteRecordRaw> = [
         {
             path: '/user',
             name: 'User',
-          component: () => import('@/views/User.vue'),
+          component: () => import('@/views/Users/User.vue'),
         },
         {
           path: '/user/create/:id?',
           name: 'UserCreate',
-          component: () => import('@/views/UserCreate.vue'),
+          component: () => import('@/views/Users/UserCreate.vue'),
+        },
+        {
+          path: '/admin/create/:id?',
+          name: 'AdminCreate',
+          component: () => import('@/views/Admin/AdminCreate.vue'),
         },
         {
           path: '/admin-list',
           name: 'Admin',
-          component: () => import('@/views/Admin.vue'),
+          component: () => import('@/views/Admin/Admin.vue'),
         },
+        {
+          path: '/role-management',
+          name: 'RoleManagement',
+          component: () => import('@/views/Roles/RoleManagement.vue'),
+      },
+      {
+        path: '/role/create/:id?',
+        name: 'RoleCreate',
+        component: () => import('@/views/Roles/RoleCreate.vue'),
+      },
+        {
+          path: '/product-group',
+          name: 'ProductGroup',
+          component: () => import('@/views/Group/ProductGroup.vue'),
+      },
+      {
+        path: '/group/create/:id?',
+        name: 'GroupCreate',
+        component: () => import('@/views/Group/GroupCreate.vue'),
+      },
+        {
+          path: '/brand',
+          name: 'Brand',
+          component: () => import('@/views/Brand/Brand.vue'),
+      },
+      {
+        path: '/brand/create/:id?',
+        name: 'BrandCreate',
+        component: () => import('@/views/Brand/BrandCreate.vue'),
+      },
+      {
+        path: '/products',
+        name: 'Products',
+        component: () => import('@/views/Products/Products.vue'),
+      },
+      {
+        path: '/product/create/:id?',
+        name: 'ProductCreate',
+        component: () => import('@/views/Products/ProductCreate.vue'),
+      },
     ]
   },
   {

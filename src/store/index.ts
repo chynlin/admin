@@ -3,6 +3,7 @@ import { createStore } from 'vuex';
 import product from './api/product'
 import main from './api/main'
 import user from './api/user'
+import roles from './api/roles'
 export default createStore({
   state: {
     mainInfo: {},
@@ -19,7 +20,8 @@ export default createStore({
   actions: {
     ...product,
     ...main,
-    ...user
+    ...user,
+    ...roles
   },
   getters: {
   }
