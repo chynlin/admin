@@ -29,7 +29,7 @@
               :key="select.id"
               :value="select.id"
             >
-              {{ select.title }}
+              {{ select.title || select.name }}
             </a-select-option>
           </a-select>
           <a-switch
@@ -89,7 +89,8 @@ const route = useRoute();
 
 interface Option {
   id: number;
-  title: string;
+  title?: string;
+  name?: string;
 }
 
 interface FormField {
@@ -136,15 +137,16 @@ const formState = ref<FormState>({
       message: '',
     },
   },
-  brand: {
-    key: 'brand',
+  brand_id: {
+    key: 'brand_id',
     label: '品牌',
-    placeholder: '請輸入品牌',
-    val: '',
-    type: 'text',
+    placeholder: '請選擇品牌',
+    val: null,
+    type: 'select',
+    options: [],
     disabled: false,
     rules: {
-      required: !route.params.id,
+      required: true,
       message: '',
     },
   },
@@ -204,6 +206,7 @@ onMounted(async () => {
     await getProductInfo();
   }
   getProductGroups();
+  getProductBrands();
 });
 
 const getProductInfo = async () => {
@@ -218,6 +221,7 @@ const getProductInfo = async () => {
         } else if (key === 'image') {
           res[key].forEach((e) => {
             fileList.value.push({
+              image_id: e.id,
               thumbUrl: e.path,
             });
           });
@@ -235,18 +239,39 @@ const getProductGroups = async () => {
   );
 };
 
+const getProductBrands = async () => {
+  formState.value.brand_id.options = await store.dispatch('get_brand_list');
+};
+
 const handleRemove = (file) => {
-  Modal.confirm({
-    title: '提示',
-    content: '資料一經刪除無法復原，是否確認要移除？',
-    async onOk() {
-      await store.dispatch('remove_product_image', {});
-    },
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    onCancel() {
-      return false;
-    },
-  });
+  if (file.originFileObj) {
+    console.log('file');
+    return true;
+  } else {
+    return new Promise((resolve, reject) => {
+      Modal.confirm({
+        title: '提示',
+        content: '資料一經刪除無法復原，是否確認要移除？',
+        async onOk() {
+          const history = fileList.value.find(
+            (e) => e.thumbUrl === file.thumbUrl
+          );
+          const res = await store.dispatch('remove_product_image', {
+            product_id: route.params.id,
+            image_id: history.image_id,
+          });
+          if (res) {
+            resolve(true);
+          } else {
+            reject(false);
+          }
+        },
+        onCancel() {
+          reject(false);
+        },
+      });
+    });
+  }
 };
 // 阻止默认上传行为
 const beforeUpload = (file) => {

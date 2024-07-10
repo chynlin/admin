@@ -122,7 +122,7 @@ const menuItems = reactive<MenuItem[]>([
       {
         key: '2-4',
         label: '庫存管理',
-        url: '/',
+        url: '/inventory',
       },
     ],
   },
@@ -135,7 +135,7 @@ const menuItems = reactive<MenuItem[]>([
       {
         key: '3-1',
         label: '訂單列表',
-        url: '/',
+        url: '/order',
       },
       {
         key: '3-2',

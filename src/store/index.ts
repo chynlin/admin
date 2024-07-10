@@ -1,9 +1,12 @@
 // src/store/index.ts
+import order from './api/order';
+import inventory from './api/inventory';
 import { createStore } from 'vuex';
 import product from './api/product'
 import main from './api/main'
 import user from './api/user'
 import roles from './api/roles'
+
 export default createStore({
   state: {
     mainInfo: {},
@@ -18,6 +21,8 @@ export default createStore({
     },
   },
   actions: {
+    ...order,
+    ...inventory,
     ...product,
     ...main,
     ...user,

@@ -26,6 +26,9 @@
         <template v-if="column.key === 'group'">
           {{ record.group?.title }}
         </template>
+        <template v-if="column.key === 'brand'">
+          {{ record.brand?.name }}
+        </template>
         <template v-if="column.key === 'status'">
           <span
             :class="+record.status === 1 ? 'text-emerald-500' : 'text-rose-500'"
@@ -70,7 +73,7 @@
               size="small"
               danger
               class="!text-xs"
-              @click="deleteUser(record.id)"
+              @click="deleteItem(record.id)"
             >
               刪除
             </a-button>
@@ -133,16 +136,18 @@
     >
       <p class="w-32 bg-gray-200 text-gray-500 !mb-0 px-3">品牌</p>
       <p class="!mb-0 px-4">
-        {{ previewProductInfo.brand }}
+        {{ previewProductInfo.brand?.name }}
       </p>
     </div>
     <div
-      class="flex items-center border-gray-200 border my-2 rounded overflow-hidden leading-8"
+      class="parent border-gray-200 border my-2 rounded overflow-hidden min-h-8"
     >
-      <p class="w-32 bg-gray-200 text-gray-500 !mb-0 px-3">商品描述</p>
-      <p class="!mb-0 px-4">
+      <div class="w-32 bg-gray-200 text-gray-500 px-3 flex items-center">
+        商品描述
+      </div>
+      <div class="px-4 flex items-center">
         {{ previewProductInfo.description }}
-      </p>
+      </div>
     </div>
   </a-modal>
 </template>
@@ -219,7 +224,7 @@ const getProductsList = async () => {
 const getGroups = async () => {
   groups.value = await store.dispatch('get_products_groups');
 };
-const deleteUser = (id) => {
+const deleteItem = (id) => {
   Modal.confirm({
     title: '確定要刪除該商品',
     content: '資料一經刪除後將永久無法恢復，確認是否要繼續',
@@ -272,5 +277,10 @@ const toggleProductStatus = (product) => {
 
 :deep(.slick-slide h3) {
   color: #687eff;
+}
+
+.parent {
+  display: grid;
+  grid-template-columns: auto 1fr;
 }
 </style>
